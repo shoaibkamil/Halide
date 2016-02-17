@@ -5,6 +5,7 @@
 #include "curved.h"
 #include "halide_image.h"
 #include "halide_image_io.h"
+#include "halide_malloc_trace.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -29,6 +30,10 @@ int main(int argc, char **argv) {
                "e.g. ./process raw" IMGEXT_IN " 3200 2 50 5 output" IMGEXT);
         return 0;
     }
+
+#ifdef HL_MEMINFO
+    halide_enable_malloc_trace();
+#endif
 
     fprintf(stderr, "input: %s\n", argv[1]);
     Image<uint16_t> input = load_image(argv[1]);
@@ -105,6 +110,9 @@ int main(int argc, char **argv) {
         fprintf(stderr, "%4d ", _lut[i]);
     }
     fprintf(stderr, "\n");
+    Image_info(lut);
+    Image_dump(lut);
+    Image_stats(lut);
 #endif
 #endif // FCAMLUT
 
