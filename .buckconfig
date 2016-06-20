@@ -1,0 +1,23 @@
+# global buck configuration
+
+[halide]
+target_macosx-x86_64 = x86-64-osx
+
+[cxx]
+  default_platform = macosx-x86_64
+  cpp = /usr/bin/clang
+  cppflags = \
+    -std=c99
+  cc = /usr/bin/clang
+  cflags = \
+    -std=c99 \
+    -fexceptions
+  cxxpp = /usr/bin/clang++
+  cxxppflags = \
+    -std=c++11
+  cxx = /usr/bin/clang++
+  cxxflags = \
+    -std=c++11 \
+    -Wall \
+    -fexceptions
+  ld = /usr/bin/clang++

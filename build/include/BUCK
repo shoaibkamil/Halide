@@ -1,0 +1,14 @@
+
+
+cxx_library(
+  name = 'halide_include',
+  visibility = ['PUBLIC',],
+  exported_headers = glob([ '*.h']),
+  exported_preprocessor_flags = [ 
+    '-D DEBUG=1'
+  ],
+  compiler_flags = [
+    '-std=c++11', '-fexceptions'
+  ],
+  header_namespace = '',
+)

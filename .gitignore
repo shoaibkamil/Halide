@@ -125,7 +125,8 @@ bin/*
 build-ios/*
 build-osx/*
 cmake_build/*
-*/build/*
+**/build/bin
+**/build/lib
 tmp/*
 doc/*
 include/*
@@ -231,4 +232,15 @@ test/*.lowered
 
 src/.tags
 src/.tags_sorted_by_file
+
+#buck build files
+.buckd
+buck-out
+buck-cache
+
+#opengl app
+**/apps/opengl/*.a
+**/apps/opengl/main
+**/apps/opengl/*.o
+**/apps/opengl/pixel_operation.h
 

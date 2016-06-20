@@ -1,0 +1,5 @@
+
+prebuilt_cxx_library(
+  name = 'Halide',
+  visibility = ['PUBLIC'],
+)

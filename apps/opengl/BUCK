@@ -1,0 +1,68 @@
+
+# abstract library dependency 
+cxx_library(
+  name = 'gl_lib',
+  visibility = ['PUBLIC',],
+  srcs = glob([ 'gl_context.cpp', 'gl_util.cpp', 'main.cpp' ]),
+  exported_headers = glob([ '*.h']),
+  exported_preprocessor_flags = [ 
+    '-D DEBUG=1'
+  ],
+  compiler_flags = [
+    '-std=c++11', '-fexceptions'
+  ],
+  platform_compiler_flags = [
+    ('macosx-x86_64', ['-I/usr/local/include', '-I/usr/local/opt/jpeg-turbo/include'])
+  ],
+  exported_platform_linker_flags = [
+    ('macosx-x86_64', ['/System/Library/Frameworks/OpenGL.framework/OpenGL', '-L/usr/local/opt/jpeg-turbo/lib', '-lturbojpeg', '-L/usr/local/lib', '-lglfw3', '-lglew']),
+  ],
+  header_namespace = '',
+  deps = [
+  '//test/performance:halide_performance',
+  '//build/include:halide_include',
+  '//apps/opengl:pixel_operation'
+  ]
+)
+
+halide_library(
+  # Your library name.
+  name = 'pixel_operation',
+
+  # Your pipeline + compiler sources.
+  srcs = ['pixel_operation.cpp'],
+
+  # Any dependencies for your compiler. Note that targets that depend on
+  # this rule WILL NOT include or link the output(s) of these targets.
+  compiler_deps = [
+    # You'll need libHalide to use this rule; in our example, we assume it's
+    # located in the 'third-party/halide' directory.
+    '//build/include:halide_include',
+    '//src:halide_src',
+    '//build:Halide',
+  ],
+
+  # Any dependencies for your generated shader. Targets that depend on this
+  # rule will include and/or link the output(s) of these targets.
+  deps = [
+    '//build/include:halide_include',
+  ],
+)
+
+cxx_binary(
+  name = 'main',
+  srcs = [
+    'main.cpp',
+  ],
+  compiler_flags = [
+    '-Wno-unused-variable', '-g',
+  ],
+  deps = [
+    '//apps/opengl:gl_lib',
+    '//test/performance:halide_performance',
+    '//build/include:halide_include'
+  ],
+  platform_compiler_flags = [
+    ('macosx-x86_64', ['-I/usr/local/include', '-I/usr/local/opt/jpeg-turbo/include'])
+  ],
+)
