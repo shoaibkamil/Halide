@@ -11,6 +11,10 @@
 #include "gl_context.h"
 #include "gl_util.h"
 
+extern "C" {
+    int halide_opengl_create_context(void*) { return 0; }
+}
+
 class Image {
 public:
     enum Layout {
@@ -111,7 +115,7 @@ int main(int argc, const char *argv[])
     
     glDeleteFramebuffers(1, &tempFBO);
 
-    if(!delete_gl_context())
+    if(!delete_gl_context(window))
         printf("\nOpenGL context cleanup failed");
 
     return 0;

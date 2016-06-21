@@ -34,14 +34,15 @@ bool create_gl_context_window(GLFWwindow** window)
     
     // Set up OpenGL options.
     // Use OpenGL verion 4.1,
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    //glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    //glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     // GLFW_OPENGL_FORWARD_COMPAT specifies whether the OpenGL context should be forward-compatible, i.e. one where all functionality deprecated in the requested version of OpenGL is removed.
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     // Indicate we only want the newest core profile, rather than using backwards compatible and deprecated features.
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     // Make the window resize-able.
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    //glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE);
     
     // Create a window to put our stuff in.
     *window = glfwCreateWindow(2048, 1024, "OpenGL", NULL, NULL);
@@ -50,7 +51,7 @@ bool create_gl_context_window(GLFWwindow** window)
     // If the window fails to be created, print out the error, clean up GLFW and exit the program.
     if(!*window) {
         fprintf(stderr, "Failed to create GLFW window.");
-        delete_gl_context();
+        delete_gl_context(*window);
         exit(0);
         return false;
     }
@@ -64,8 +65,11 @@ bool create_gl_context_window(GLFWwindow** window)
     return true;
 }
 
-bool delete_gl_context()
+bool delete_gl_context(GLFWwindow* window)
 {
+    while (!glfwWindowShouldClose(window))
+      glfwPollEvents();
+
     // Release the current context
     glfwMakeContextCurrent(NULL);
     

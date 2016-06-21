@@ -60,7 +60,7 @@ int main(int argc, char** argv)
 
     Target target = get_target_from_environment();
     target.set_feature(Target::OpenGL);
-    // target.set_feature(Target::Debug);
+    target.set_feature(Target::Debug);
 
     std::vector<Argument> args = {input8, image_x};
     out.compile_to_file("pixel_operation", args, target);

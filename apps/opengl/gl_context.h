@@ -17,7 +17,7 @@ extern "C" {
     bool create_gl_context_window(GLFWwindow** window);
     
     //deletes the OpenGL context and cleans up
-    bool delete_gl_context();
+    bool delete_gl_context(GLFWwindow* window);
 
 #ifdef __cplusplus
 }
