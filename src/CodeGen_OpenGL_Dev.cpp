@@ -326,13 +326,23 @@ void CodeGen_GLSL::visit(const FloatImm *op) {
     // precision of 9 digits, which should be enough to recover the binary
     // float unambiguously from the decimal representation (if iostreams
     // implements correct rounding).
-    const float truncated = (op->value < 0 ? std::ceil(op->value) : std::floor(op->value) );
-    if (truncated == op->value) {
-        oss << std::fixed << std::setprecision(1) << op->value;
+    if (isnan(op->value)) {
+        id = "nan_f32()";
+    } else if (isinf(op->value)) {
+        if (op->value > 0) {
+            id = "inf_f32()";
+        } else {
+            id = "neg_inf_f32()";
+        }
     } else {
-        oss << std::setprecision(9) << op->value;
+        const float truncated = (op->value < 0 ? std::ceil(op->value) : std::floor(op->value) );
+        if (truncated == op->value) {
+            oss << std::fixed << std::setprecision(1) << op->value;
+        } else {
+            oss << std::setprecision(9) << op->value;
+        }
+        id = oss.str();
     }
-    id = oss.str();
 }
 
 void CodeGen_GLSL::visit(const IntImm *op) {
@@ -527,7 +537,8 @@ void CodeGen_GLSL::visit(const Load *op) {
         internal_assert(is_zero(op->index));
         id = print_name(op->name);
     } else if (vector_vars.contains(op->name)) {
-        id = print_name(op->name) + get_vector_suffix(op->index);
+        // Insert a temporary here so we don't dereference a (de)mangled name + lane
+        print_assignment(op->type, print_name(op->name) + get_vector_suffix(op->index));
     } else if (op->type.is_scalar()) {
         string idx = print_expr(op->index);
         print_assignment(op->type, print_name(op->name) + "[" + idx + "]");
@@ -921,7 +932,10 @@ void CodeGen_GLSL::add_kernel(Stmt stmt, string name,
     stream <<
         "float _trunc_f32(float x) {\n"
         "  return floor(abs(x)) * sign(x);\n"
-        "}\n";
+        "}\n"
+        "float nan_f32() { return sqrt(-1.0); }\n"
+        "float inf_f32() { return (1.0/0.0); }\n"
+        "float neg_inf_f32() { return (-1.0)/0.0; }\n";
 
     stream << "void main() {\n";
     indent += 2;
